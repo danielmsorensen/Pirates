@@ -1,0 +1,296 @@
+fileFormatVersion: 2
+guid: b9000e7efab3b7b4f82d68ebfa71d7ad
+timeCreated: 1464064862
+licenseType: Pro
+TextureImporter:
+  fileIDToRecycleName:
+    21300000: ChombiBoyHead
+    21300002: ChombiBoyBody
+    21300004: ChombiBoyArm1R
+    21300006: ChombiBoyArm1L
+    21300008: ChombiBoyNeck
+    21300010: ChombiBoyHandL
+    21300012: ChombiBoyArm2L
+    21300014: ChombiBoyLeg1L
+    21300016: ChombiBoyLeg1R
+    21300018: ChombiBoyArm2R
+    21300020: ChombiBoyLeg2L
+    21300022: ChombiBoyLeg2R
+    21300024: ChombiBoyHip
+    21300026: ChombiBoyHandR
+    21300028: ChombiBoyShoeL
+    21300030: ChombiBoyShoeR
+    21300032: ChombiBoy_16
+  serializedVersion: 3
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+  isReadable: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 0
+  cubemapConvolution: 0
+  cubemapConvolutionSteps: 7
+  cubemapConvolutionExponent: 1.5
+  seamlessCubemap: 0
+  textureFormat: -1
+  maxTextureSize: 2048
+  textureSettings:
+    filterMode: -1
+    aniso: 16
+    mipBias: -1
+    wrapMode: 1
+  nPOTScale: 0
+  lightmap: 0
+  rGBM: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spritePixelsToUnits: 100
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  shapeTexture: 0
+  textureType: 8
+  buildTargetSettings: []
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: ChombiBoyHead
+      rect:
+        serializedVersion: 2
+        x: 16
+        y: 284
+        width: 201
+        height: 221
+      alignment: 9
+      pivot: {x: 0.5917177, y: 0.27291912}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: ChombiBoyBody
+      rect:
+        serializedVersion: 2
+        x: 226
+        y: 345
+        width: 89
+        height: 155
+      alignment: 9
+      pivot: {x: 0.5003028, y: 0.116632275}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: ChombiBoyArm1R
+      rect:
+        serializedVersion: 2
+        x: 331
+        y: 432
+        width: 139
+        height: 59
+      alignment: 9
+      pivot: {x: 0.8752011, y: 0.5146107}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: ChombiBoyArm1L
+      rect:
+        serializedVersion: 2
+        x: 332
+        y: 356
+        width: 140
+        height: 59
+      alignment: 9
+      pivot: {x: 0.8694425, y: 0.5219163}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: ChombiBoyNeck
+      rect:
+        serializedVersion: 2
+        x: 223
+        y: 240
+        width: 65
+        height: 93
+      alignment: 9
+      pivot: {x: 0.2878073, y: 0.17005937}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: ChombiBoyHandL
+      rect:
+        serializedVersion: 2
+        x: 312
+        y: 256
+        width: 67
+        height: 86
+      alignment: 9
+      pivot: {x: 0.66726, y: 0.8658625}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: ChombiBoyArm2L
+      rect:
+        serializedVersion: 2
+        x: 392
+        y: 304
+        width: 107
+        height: 40
+      alignment: 9
+      pivot: {x: 0.86656487, y: 0.5431015}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: ChombiBoyLeg1L
+      rect:
+        serializedVersion: 2
+        x: 10
+        y: 200
+        width: 54
+        height: 68
+      alignment: 9
+      pivot: {x: 0.49201816, y: 0.82960063}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: ChombiBoyLeg1R
+      rect:
+        serializedVersion: 2
+        x: 72
+        y: 199
+        width: 53
+        height: 69
+      alignment: 9
+      pivot: {x: 0.49186748, y: 0.837317}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: ChombiBoyArm2R
+      rect:
+        serializedVersion: 2
+        x: 394
+        y: 246
+        width: 107
+        height: 40
+      alignment: 9
+      pivot: {x: 0.8705935, y: 0.51077574}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: ChombiBoyLeg2L
+      rect:
+        serializedVersion: 2
+        x: 3
+        y: 83
+        width: 82
+        height: 107
+      alignment: 9
+      pivot: {x: 0.55256295, y: 0.86253715}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: ChombiBoyLeg2R
+      rect:
+        serializedVersion: 2
+        x: 95
+        y: 86
+        width: 84
+        height: 107
+      alignment: 9
+      pivot: {x: 0.5359181, y: 0.8746215}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: ChombiBoyHip
+      rect:
+        serializedVersion: 2
+        x: 193
+        y: 128
+        width: 79
+        height: 76
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: ChombiBoyHandR
+      rect:
+        serializedVersion: 2
+        x: 292
+        y: 152
+        width: 92
+        height: 85
+      alignment: 9
+      pivot: {x: 0.9169613, y: 0.6267695}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: ChombiBoyShoeL
+      rect:
+        serializedVersion: 2
+        x: 16
+        y: 4
+        width: 120
+        height: 72
+      alignment: 9
+      pivot: {x: 0.70473266, y: 0.8053034}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: ChombiBoyShoeR
+      rect:
+        serializedVersion: 2
+        x: 149
+        y: 5
+        width: 116
+        height: 71
+      alignment: 9
+      pivot: {x: 0.73037076, y: 0.7913914}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: ChombiBoy_16
+      rect:
+        serializedVersion: 2
+        x: 367
+        y: 11
+        width: 138
+        height: 96
+      alignment: 9
+      pivot: {x: 0.90290636, y: 0.81877255}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    outline: []
+  spritePackingTag: 
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

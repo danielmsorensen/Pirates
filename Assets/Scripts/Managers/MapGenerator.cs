@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+using UnityEngine.Tilemaps;
+
 public class MapGenerator : MonoBehaviour {
 
     [Header("Noise Settings")]
@@ -14,11 +16,15 @@ public class MapGenerator : MonoBehaviour {
     [Space]
     public int seed;
     public Vector2Int offset;
+    [Space]
+    public bool autoInit;
     [Header("Spawning")]
     public Transform target;
     public float targetRadius;
     public Transform tileHolder;
-    public float tileSize;
+    [Space]
+    public bool autoSpawn;
+    [Space]
     [Space]
     [Tooltip("List of layers the map will be built from. It should be in descending order of levels")]
     public List<Layer> layers = new List<Layer>();
@@ -29,6 +35,7 @@ public class MapGenerator : MonoBehaviour {
 
     #region Hidden Map Settings
     bool initialized;
+    bool spawned;
 
     System.Random random;
     Vector2Int[] octaveOffsets;
@@ -41,9 +48,8 @@ public class MapGenerator : MonoBehaviour {
 
     [HideInInspector]
     public bool redraw;
-
-    int tilesPerUnit;
-    Vector2 lastTargetTile;
+    
+    Vector2Int lastTargetTile;
 
     [ContextMenu("Init")]
     public void Init() {
@@ -98,11 +104,15 @@ public class MapGenerator : MonoBehaviour {
     }
 
     void Awake() {
-        Init();
+        if (autoInit) {
+            Init();
+        }
     }
 
     void Start() {
-        SpawnInitialTiles();
+        if (autoSpawn) {
+            SpawnInitialTiles();
+        }
     }
 
     public float[,] GetNoiseValues(int width, int height, Vector2Int centre) {
@@ -123,48 +133,68 @@ public class MapGenerator : MonoBehaviour {
     }
 
     public void SpawnInitialTiles() {
-        float tiles = Mathf.CeilToInt(targetRadius / tileSize);
-        for (int x = 0; x < tiles; x++) {
-            for (int y = 0; y < tiles; y++) {
-                float value = GetNoiseValue(x, y);
-                GameObject prefab = null;
-                foreach (Layer layer in layers) {
-                    if (value >= layer.level) {
-                        prefab = layer.prefab;
-                        break;
-                    }
-                }
-                Vector3 position = new Vector3(x, y) * tileSize;
-                if (prefab != null) {
-                    Transform tile = Instantiate(prefab, position, Quaternion.identity, tileHolder).transform;
-                }
+        int tiles = Mathf.CeilToInt(targetRadius);
+        for (int x = -tiles; x <= tiles; x++) {
+            for (int y = -tiles; y <= tiles; y++) {
+                SpawnTile(new Vector2Int(x, y));
             }
         }
     }
 
-    public Vector2 GetTile(Vector2 position) {
-        return new Vector2(Mathf.Floor((position.x + tileSize / 2) / tileSize), Mathf.Floor((position.y + tileSize / 2) / tileSize)) * tileSize;
+    public Transform SpawnTile(Vector2Int coord) {
+        spawned = true;
+        float value = GetNoiseValue(coord.x, coord.y);
+        GameObject prefab = null;
+        foreach (Layer layer in layers) {
+            if (value >= layer.level) {
+                prefab = layer.prefab;
+                break;
+            }
+        }
+        Vector3 position = new Vector3(coord.x, coord.y);
+        if (prefab != null) {
+            Transform tile = Instantiate(prefab, position, Quaternion.identity, tileHolder).transform;
+            return tile;
+        }
+        return null;
+    }
+
+    public Vector2Int GetTile(Vector2 position) {
+        return new Vector2Int(Mathf.FloorToInt((position.x + 0.5f)), Mathf.FloorToInt((position.y + 0.5f)));
     }
 
     void Update() {
-        Vector2 targetTile = GetTile(target.position);
-        DebugTile(targetTile, Color.blue);
-        Vector2 positionVector = new Vector2(-1, 1);
-        Rect targetRect = new Rect(targetTile + positionVector * targetRadius, Vector2.one * targetRadius * 2);
-        if (target != null && targetRadius > 0) {
+        if (initialized && spawned && target != null && targetRadius > 0) {
+            Vector2Int targetTile = GetTile(target.position);
+            Rect targetRect = new Rect(targetTile + - Vector2.one * targetRadius, Vector2.one * targetRadius * 2);
+
             for (int i = 0; i < tileHolder.childCount; i++) {
                 Transform tile = tileHolder.GetChild(i);
-                Rect tileRect = new Rect(GetTile(tile.position) + positionVector * tileSize / 2, Vector2.one * tileSize);
-                if(!targetRect.Overlaps(tileRect)) {
-                    DebugTile(tile.position, Color.red);
+                
+                Rect tileRect = new Rect(GetTile(tile.position) + -Vector2.one * 0.5f, Vector2.one);
+                if (!targetRect.Overlaps(tileRect)) {
+                    Vector2Int newPos = targetTile + lastTargetTile - GetTile(tile.position);
+                    Destroy(tile.gameObject);
+                    SpawnTile(newPos);
                 }
             }
+            lastTargetTile = targetTile;
+            DebugTile(targetTile, Color.blue);
         }
+        
     }
 
     public void DebugTile(Vector2 tile, Color colour) {
-        Debug.DrawLine(tile + Vector2.up *tileSize / 2, tile - Vector2.up * tileSize / 2, colour);
-        Debug.DrawLine(tile + Vector2.right * tileSize / 2, tile - Vector2.right * tileSize / 2, colour);
+        Vector2 pn = new Vector2(1, -1) * 0.5f;
+        Vector2 pp = new Vector2(1, 1) * 0.5f;
+
+        Debug.DrawLine(tile + pp, tile - pn, colour);
+        Debug.DrawLine(tile - pn, tile - pp, colour);
+        Debug.DrawLine(tile - pp, tile + pn, colour);
+        Debug.DrawLine(tile + pn, tile + pp, colour);
+
+        Debug.DrawLine(tile + pp, tile - pp, colour);
+        Debug.DrawLine(tile - pn, tile + pn, colour);
     }
 
     void OnValidate() {
@@ -177,10 +207,21 @@ public class MapGenerator : MonoBehaviour {
 
         previewSample = Mathf.Max(previewSample, 1);
 
+        if(autoSpawn) {
+            autoInit = true;
+        }
+
         if(layers.Count > 0) {
             Layer layer = layers[layers.Count - 1];
             layer.level = 0;
             layers[layers.Count - 1] = layer;
+        }
+    }
+
+    void OnDrawGizmos() {
+        if (target != null && targetRadius > 0) {
+            Gizmos.color = Color.magenta;
+            Gizmos.DrawWireCube(target.position, Vector2.one * targetRadius * 2);
         }
     }
 
