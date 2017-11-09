@@ -57,22 +57,24 @@ MonoBehaviour:
   lacunarity: 2
   seed: 0
   offset: {x: 0, y: 0}
+  autoInit: 1
   target: {fileID: 0}
   targetRadius: 10
   tileHolder: {fileID: 4576350311956936}
+  autoSpawn: 1
   layers:
   - name: Grass
     level: 0.3
     colour: {r: 0, g: 0.77205884, b: 0.32479712, a: 1}
-    prefab: {fileID: 1077136450675386, guid: 9a619fd71e368824fb1441d4cc9ee60a, type: 2}
+    prefab: {fileID: 1631329641238468, guid: 2704474363a35b0499451ca2d44c3484, type: 2}
   - name: Sand
     level: 0.08
     colour: {r: 0.99320483, g: 1, b: 0.50735295, a: 1}
-    prefab: {fileID: 1121564458442120, guid: 50f4396b55bffbc4d869a78e03555834, type: 2}
+    prefab: {fileID: 1723091255903198, guid: 5c8c4b39467c6da4d9df65139fec9ed1, type: 2}
   - name: Water
     level: 0
     colour: {r: 0.1102941, g: 0.4845841, b: 1, a: 1}
-    prefab: {fileID: 1436193826188694, guid: c34c8a39279f5c84eac21c78ac363b28, type: 2}
+    prefab: {fileID: 1327057731441580, guid: 5214680e959bc30488d54084343c92ad, type: 2}
   previewSample: 50
   previewColourized: 1
   redraw: 0

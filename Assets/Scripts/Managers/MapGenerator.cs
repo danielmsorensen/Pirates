@@ -22,8 +22,10 @@ public class MapGenerator : MonoBehaviour {
     public Transform target;
     public float targetRadius;
     public Transform tileHolder;
+    public Tilemap tilemap;
     [Space]
     public bool autoSpawn;
+    public bool useTilemapper;
     [Space]
     [Space]
     [Tooltip("List of layers the map will be built from. It should be in descending order of levels")]
@@ -33,7 +35,6 @@ public class MapGenerator : MonoBehaviour {
     public int previewSample = 100;
     public bool previewColourized;
 
-    #region Hidden Map Settings
     bool initialized;
     bool spawned;
 
@@ -44,7 +45,6 @@ public class MapGenerator : MonoBehaviour {
     float frequency;
 
     float maxValue;
-    #endregion
 
     [HideInInspector]
     public bool redraw;
@@ -98,21 +98,9 @@ public class MapGenerator : MonoBehaviour {
             frequency *= lacunarity;
         }
 
-        value = Mathf.InverseLerp(0, maxValue, value);
+        value = Mathf.Clamp01(Mathf.InverseLerp(0, maxValue, value));
 
         return value;
-    }
-
-    void Awake() {
-        if (autoInit) {
-            Init();
-        }
-    }
-
-    void Start() {
-        if (autoSpawn) {
-            SpawnInitialTiles();
-        }
     }
 
     public float[,] GetNoiseValues(int width, int height, Vector2Int centre) {
@@ -131,8 +119,21 @@ public class MapGenerator : MonoBehaviour {
 
         return values;
     }
+    
+    void Awake() {
+        if (autoInit) {
+            Init();
+        }
+    }
+
+    void Start() {
+        if (autoSpawn) {
+            SpawnInitialTiles();
+        }
+    }
 
     public void SpawnInitialTiles() {
+        spawned = true;
         int tiles = Mathf.CeilToInt(targetRadius);
         for (int x = -tiles; x <= tiles; x++) {
             for (int y = -tiles; y <= tiles; y++) {
@@ -141,9 +142,9 @@ public class MapGenerator : MonoBehaviour {
         }
     }
 
-    public Transform SpawnTile(Vector2Int coord) {
-        spawned = true;
-        float value = GetNoiseValue(coord.x, coord.y);
+    public Transform SpawnTile(Vector2Int position) {
+        position = GetTile(position);
+        float value = GetNoiseValue(position.x, position.y);
         GameObject prefab = null;
         foreach (Layer layer in layers) {
             if (value >= layer.level) {
@@ -151,37 +152,58 @@ public class MapGenerator : MonoBehaviour {
                 break;
             }
         }
-        Vector3 position = new Vector3(coord.x, coord.y);
         if (prefab != null) {
-            Transform tile = Instantiate(prefab, position, Quaternion.identity, tileHolder).transform;
+            Transform tile = Instantiate(prefab, new Vector3(position.x, position.y), Quaternion.identity, tileHolder).transform;
+            tile.position = new Vector3(position.x, position.y);
             return tile;
         }
         return null;
     }
 
+    public TileBase SpawnTileBase(Vector2Int position) {
+        position = GetTile(position);
+        float value = GetNoiseValue(position.x, position.y);
+        TileBase tile = null;
+        foreach(Layer layer in layers) {
+            if(value >= layer.level) {
+                tile = layer.tile;
+                break;
+            }
+        }
+        tilemap.SetTile(new Vector3Int(position.x, position.y, 0), tile);
+        return tile;
+    }
+
     public Vector2Int GetTile(Vector2 position) {
-        return new Vector2Int(Mathf.FloorToInt((position.x + 0.5f)), Mathf.FloorToInt((position.y + 0.5f)));
+        if (useTilemapper) {
+            Vector3Int tile = tilemap.WorldToCell(new Vector3(position.x, position.y, 0));
+            return new Vector2Int(tile.x, tile.y);
+        }
+        else {
+            return new Vector2Int(Mathf.FloorToInt(position.x + 0.5f), Mathf.FloorToInt(position.y + 0.5f));
+        }
     }
 
     void Update() {
         if (initialized && spawned && target != null && targetRadius > 0) {
             Vector2Int targetTile = GetTile(target.position);
-            Rect targetRect = new Rect(targetTile + - Vector2.one * targetRadius, Vector2.one * targetRadius * 2);
+            Rect targetRect = new Rect(targetTile - Vector2.one * targetRadius, Vector2.one * targetRadius * 2);
 
             for (int i = 0; i < tileHolder.childCount; i++) {
                 Transform tile = tileHolder.GetChild(i);
-                
-                Rect tileRect = new Rect(GetTile(tile.position) + -Vector2.one * 0.5f, Vector2.one);
+                Vector2Int tilePosition = GetTile(tile.position);
+                Rect tileRect = new Rect(tilePosition - Vector2.one * 0.5f, Vector2.one);
                 if (!targetRect.Overlaps(tileRect)) {
-                    Vector2Int newPos = targetTile + lastTargetTile - GetTile(tile.position);
-                    Destroy(tile.gameObject);
+                    Vector2Int newPos = targetTile + lastTargetTile - tilePosition;
+                    if (!useTilemapper) {
+                        Destroy(tile.gameObject);
+                    }
                     SpawnTile(newPos);
                 }
             }
             lastTargetTile = targetTile;
             DebugTile(targetTile, Color.blue);
         }
-        
     }
 
     public void DebugTile(Vector2 tile, Color colour) {
@@ -231,6 +253,8 @@ public class MapGenerator : MonoBehaviour {
         [Range(0, 1)]
         public float level;
         public Color colour;
+        [Space]
         public GameObject prefab;
+        public TileBase tile;
     }
 }
