@@ -38,7 +38,7 @@ public class MapGeneratorEditor : Editor {
     }
 
     void UpdateTexture() {
-        float[,] values = map.GetNoiseValues(map.previewSample, map.previewSample, Vector2Int.zero);
+        float[,] values = map.GetNoiseValues(map.previewSample, map.previewSample, map.previewOffset);
 
         mapTex = new Texture2D(map.previewSample, map.previewSample);
         Color[] colourMap = new Color[map.previewSample * map.previewSample];

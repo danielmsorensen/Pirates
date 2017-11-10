@@ -22,7 +22,7 @@ public class MapGenerator : MonoBehaviour {
     public Transform target;
     public float targetRadius;
     public Transform tileHolder;
-    public Tilemap tilemap;
+    public Tilemap[] tilemaps;
     [Space]
     public bool autoSpawn;
     public bool useTilemapper;
@@ -33,6 +33,7 @@ public class MapGenerator : MonoBehaviour {
 
     [Header("Preview")]
     public int previewSample = 100;
+    public Vector2Int previewOffset;
     public bool previewColourized;
 
     bool initialized;
@@ -45,6 +46,7 @@ public class MapGenerator : MonoBehaviour {
     float frequency;
 
     float maxValue;
+    int tiles;
 
     [HideInInspector]
     public bool redraw;
@@ -62,6 +64,16 @@ public class MapGenerator : MonoBehaviour {
         frequency = 1;
 
         maxValue = 0;
+        tiles = Mathf.CeilToInt(targetRadius);
+
+        if (tilemaps != null) {
+            foreach (Tilemap tilemap in tilemaps) {
+                tilemap.gameObject.SetActive(useTilemapper);
+            }
+        }
+        if(tileHolder != null) {
+            tileHolder.gameObject.SetActive(!useTilemapper);
+        }
 
         for (int i = 0; i < octaves; i++) {
             int offsetX = random.Next(-100000, 100000) + offset.x;
@@ -128,16 +140,21 @@ public class MapGenerator : MonoBehaviour {
 
     void Start() {
         if (autoSpawn) {
-            SpawnInitialTiles();
+            SpawnInitialTiles(Vector2Int.zero);
         }
     }
 
-    public void SpawnInitialTiles() {
+    public void SpawnInitialTiles(Vector2Int position) {
         spawned = true;
-        int tiles = Mathf.CeilToInt(targetRadius);
         for (int x = -tiles; x <= tiles; x++) {
             for (int y = -tiles; y <= tiles; y++) {
-                SpawnTile(new Vector2Int(x, y));
+                Vector2Int tile = new Vector2Int(x, y) + position;
+                if (useTilemapper) {
+                    SpawnTileBase(tile);
+                }
+                else {
+                    SpawnTile(tile);
+                }
             }
         }
     }
@@ -163,20 +180,22 @@ public class MapGenerator : MonoBehaviour {
     public TileBase SpawnTileBase(Vector2Int position) {
         position = GetTile(position);
         float value = GetNoiseValue(position.x, position.y);
+        List<Layer> layersReversed = new List<Layer>(layers);
+        layersReversed.Reverse();
         TileBase tile = null;
-        foreach(Layer layer in layers) {
+        foreach(Layer layer in layersReversed) {
             if(value >= layer.level) {
+                tilemaps[layer.tilemapLayerIndex].SetTile(new Vector3Int(position.x, position.y, 0), layer.tile);
                 tile = layer.tile;
-                break;
             }
         }
-        tilemap.SetTile(new Vector3Int(position.x, position.y, 0), tile);
+        
         return tile;
     }
 
     public Vector2Int GetTile(Vector2 position) {
         if (useTilemapper) {
-            Vector3Int tile = tilemap.WorldToCell(new Vector3(position.x, position.y, 0));
+            Vector3Int tile = tilemaps[0].WorldToCell(new Vector3(position.x, position.y, 0));
             return new Vector2Int(tile.x, tile.y);
         }
         else {
@@ -189,20 +208,28 @@ public class MapGenerator : MonoBehaviour {
             Vector2Int targetTile = GetTile(target.position);
             Rect targetRect = new Rect(targetTile - Vector2.one * targetRadius, Vector2.one * targetRadius * 2);
 
-            for (int i = 0; i < tileHolder.childCount; i++) {
-                Transform tile = tileHolder.GetChild(i);
-                Vector2Int tilePosition = GetTile(tile.position);
-                Rect tileRect = new Rect(tilePosition - Vector2.one * 0.5f, Vector2.one);
-                if (!targetRect.Overlaps(tileRect)) {
-                    Vector2Int newPos = targetTile + lastTargetTile - tilePosition;
-                    if (!useTilemapper) {
-                        Destroy(tile.gameObject);
+            if (targetTile != lastTargetTile) {
+                if (useTilemapper) {
+                    foreach(Tilemap tilemap in tilemaps) {
+                        tilemap.ClearAllTiles();
                     }
-                    SpawnTile(newPos);
+                    SpawnInitialTiles(targetTile);
+                }
+                else {
+                    for (int i = 0; i < tileHolder.childCount; i++) {
+                        Transform tile = tileHolder.GetChild(i);
+                        Vector2Int tilePosition = GetTile(tile.position);
+                        Rect tileRect = new Rect(tilePosition - Vector2.one * 0.5f, Vector2.one);
+                        if (!targetRect.Overlaps(tileRect)) {
+                            Vector2Int newPos = targetTile + lastTargetTile - tilePosition;
+                            Destroy(tile.gameObject);
+                            SpawnTile(newPos);
+                        }
+                    }
+                    lastTargetTile = targetTile;
+                    DebugTile(targetTile, Color.blue);
                 }
             }
-            lastTargetTile = targetTile;
-            DebugTile(targetTile, Color.blue);
         }
     }
 
@@ -256,5 +283,6 @@ public class MapGenerator : MonoBehaviour {
         [Space]
         public GameObject prefab;
         public TileBase tile;
+        public int tilemapLayerIndex;
     }
 }
