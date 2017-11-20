@@ -11,4 +11,13 @@ public class Player : PhysicsObject {
         base.Awake();
         motor = GetComponent<PlayerMotor>();
     }
+
+    void Start() {
+        if(photonView.isMine) {
+            motor.enabled = true;
+        }
+        else {
+            motor.enabled = false;
+        }
+    }
 }

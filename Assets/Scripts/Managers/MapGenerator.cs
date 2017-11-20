@@ -233,6 +233,13 @@ public class MapGenerator : MonoBehaviour {
         }
     }
 
+    public enum RandomTileMode { Only, UpTo, DownTo };
+    public Vector2Int RandomTile(int layerIndex, RandomTileMode randomTileMode) {
+        Vector2Int tile;
+
+        return tile;
+    }
+
     public void DebugTile(Vector2 tile, Color colour) {
         Vector2 pn = new Vector2(1, -1) * 0.5f;
         Vector2 pp = new Vector2(1, 1) * 0.5f;

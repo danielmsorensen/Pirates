@@ -17,23 +17,24 @@ public class CameraManager : MonoBehaviour {
 
     float transitionProgress;
 
-    float z;
+    public static CameraManager active { get; private set; }
 
     void Awake() {
         camera = GetComponent<Camera>();
-        z = transform.position.z;
-    }
-
-    void Start() {
-        lastTarget = target;
+        active = this;
     }
 
     void LateUpdate() {
         if (target != null) {
             Vector3 position;
             if (target != lastTarget) {
-                transitionProgress = 0;
-                lastTargetPosition = lastTarget.position;
+                if (lastTarget != null) {
+                    transitionProgress = 0;
+                    lastTargetPosition = lastTarget.position;
+                }
+                else {
+                    lastTargetPosition = transform.position;
+                }
             }
             if(transitionProgress < 1) {
                 position = Vector3.Lerp(lastTargetPosition, target.position, transitionProgress);

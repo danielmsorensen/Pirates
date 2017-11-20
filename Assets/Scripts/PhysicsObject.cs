@@ -5,6 +5,7 @@ using Photon;
 
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(Collider2D))]
+[RequireComponent(typeof(PhotonView))]
 public class PhysicsObject : Photon.MonoBehaviour {
 
 	public new Rigidbody2D rigidbody { get; private set; }
